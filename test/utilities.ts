@@ -62,6 +62,41 @@ describe('utilities', () => {
     });
   });
 
+  describe('with query with directives', () => {
+    const queryWithDirectives = gql`
+      query withDirectives($withAvatar: Boolean!) {
+        alias: name
+        height(unit: METERS)
+        avatar @include(if: $withAvatar) {
+          square
+        }
+      }
+    `;
+
+    const data = {
+      alias: 'Bob',
+      name: 'Wrong',
+      height: 1.89,
+      avatar: {
+        square: 'abc',
+        circle: 'def',
+      },
+    };
+    const filteredData = {
+      alias: 'Bob',
+      height: 1.89,
+      avatar: {
+        square: 'abc',
+      },
+    };
+
+
+    it('can filter data', () => {
+      assert.deepEqual(filter(queryWithDirectives, data), filteredData);
+    });
+
+  });
+
   describe('with a single fragment', () => {
     const doc = gql`
       fragment PersonDetails on Person {

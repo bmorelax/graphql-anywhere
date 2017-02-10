@@ -44,6 +44,7 @@ export type ExecContext = {
   resultMapper: ResultMapper;
   resolver: Resolver;
   fragmentMatcher: FragmentMatcher;
+  ignoreIncludeDirectives: boolean;
 }
 
 
@@ -55,6 +56,7 @@ export type ExecInfo = {
 export type ExecOptions = {
   resultMapper?: ResultMapper;
   fragmentMatcher?: FragmentMatcher;
+  ignoreIncludeDirectives?: boolean;
 }
 
 // Based on graphql function from graphql-js:
@@ -83,6 +85,7 @@ export function graphql(
 
   // Default matcher always matches all fragments
   const fragmentMatcher = execOptions.fragmentMatcher || (() => true);
+  const ignoreIncludeDirectives = execOptions.ignoreIncludeDirectives;
 
   const execContext: ExecContext = {
     fragmentMap,
@@ -91,6 +94,7 @@ export function graphql(
     resultMapper,
     resolver,
     fragmentMatcher,
+    ignoreIncludeDirectives,
   };
 
   return executeSelectionSet(
@@ -110,12 +114,13 @@ function executeSelectionSet(
     fragmentMap,
     contextValue,
     variableValues: variables,
+    ignoreIncludeDirectives,
   } = execContext;
 
   const result = {};
 
   selectionSet.selections.forEach((selection) => {
-    if (! shouldInclude(selection, variables)) {
+    if (!ignoreIncludeDirectives && !shouldInclude(selection, variables)) {
       // Skip this entirely
       return;
     }

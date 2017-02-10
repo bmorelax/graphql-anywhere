@@ -15,7 +15,7 @@ export function filter(doc: DocumentNode, data: any): any {
     return root[info.resultKey];
   };
 
-  return graphql(resolver, doc, data);
+  return graphql(resolver, doc, data, null, null, {ignoreIncludeDirectives: true});
 }
 
 // TODO: we should probably make check call propType and then throw,
