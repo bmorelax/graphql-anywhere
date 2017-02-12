@@ -85,7 +85,7 @@ export function graphql(
 
   // Default matcher always matches all fragments
   const fragmentMatcher = execOptions.fragmentMatcher || (() => true);
-  const ignoreIncludeDirectives = execOptions.ignoreIncludeDirectives;
+  const ignoreIncludeDirectives = !!execOptions.ignoreIncludeDirectives;
 
   const execContext: ExecContext = {
     fragmentMap,
